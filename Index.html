@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alamanese Encoder</title>
+<style>
+body {
+  background:#0a1a3a;
+  color:white;
+  font-family:Arial;
+  margin:0; padding:0;
+  height:100vh; overflow:hidden;
+  display:flex; justify-content:center; align-items:center;
+  flex-direction:column;
+  text-align:center;
+}
+.box {
+  background:#102a60;
+  padding:20px;
+  border-radius:12px;
+  width:90%;
+  max-width:420px;
+}
+input, textarea {
+  width:100%;
+  padding:10px;
+  margin:10px 0;
+  border:none;
+  border-radius:8px;
+  font-size:16px;
+}
+textarea {height:120px;}
+button {
+  padding:12px 20px;
+  border:none;
+  border-radius:8px;
+  background:#4fa3ff;
+  color:black;
+  font-weight:bold;
+  font-size:17px;
+  width:100%;
+}
+.hidden {display:none;}
+#msg {color:#ff8080; height:20px;}
+</style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Alamanese Encoder</h2>
+  <p>Enter password to access</p>
+  <input id="pass" type="password" placeholder="Password">
+  <button onclick="unlock()">Unlock</button>
+  <div id="msg"></div>
+
+  <div id="encArea" class="hidden">
+    <h3>Encode / Decode</h3>
+    <textarea id="input" placeholder="Type here..."></textarea>
+    <button onclick="encode()">Encode</button>
+    <button onclick="decode()">Decode</button>
+    <textarea id="output" placeholder="Output..."></textarea>
+  </div>
+</div>
+
+<script>
+const PASSWORD = "ALAMA02";
+
+function unlock(){
+  let v = document.getElementById("pass").value;
+  if(v === PASSWORD){
+    document.getElementById("encArea").classList.remove("hidden");
+    document.getElementById("msg").textContent = "";
+  } else {
+    document.getElementById("msg").textContent = "Wrong password";
+    setTimeout(()=> document.getElementById("msg").textContent="", 3000);
+  }
+}
+
+const cipher = {
+"A":"J","B":"M","C":"L","D":"X","E":"T","F":"R","G":"C",
+"H":"V","I":"D","J":"F","K":"S","L":"A","M":"Z","N":"P",
+"O":"E","P":"G","Q":"Q","R":"Y","S":"U","T":"N","U":"O",
+"V":"W","W":"K","X":"H","Y":"I","Z":"Bu"
+};
+
+function encode(){
+  let t = document.getElementById("input").value;
+  let out = "";
+  for(let ch of t){
+    let upper = ch.toUpperCase();
+    if(cipher[upper]){
+      let m = cipher[upper];
+      if(ch === ch.toLowerCase()) m = m.toLowerCase();
+      out += m;
+    } else out += ch;
+  }
+  document.getElementById("output").value = out;
+}
+
+function decode(){
+  let t = document.getElementById("input").value;
+  t = t.replace(/Bu/g,"Z").replace(/bu/g,"z");
+  for(let k in cipher){
+    let v = cipher[k];
+    if(v.length === 1){
+      t = t.replace(new RegExp(v,"g"), k);
+      t = t.replace(new RegExp(v.toLowerCase(),"g"), k.toLowerCase());
+    }
+  }
+  document.getElementById("output").value = t;
+}
+</script>
+
+</body>
+</html>
